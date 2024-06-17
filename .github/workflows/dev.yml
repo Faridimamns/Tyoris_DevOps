@@ -22,8 +22,8 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          docker build -t ghcr.io/Faridimamns/tyoris:latest .
-          docker push ghcr.io/Faridimamns/tyoris:latest
+          docker build -t ghcr.io/faridimamns/tyoris:latest .
+          docker push ghcr.io/faridimamns/tyoris:latest
 
   deploy-development:
     runs-on: ubuntu-latest
