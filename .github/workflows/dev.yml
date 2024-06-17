@@ -37,9 +37,18 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
-            docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GIT_TOKEN }}
-            docker pull ghcr.io/Faridimamns/tyoris:latest
-            docker run -d --name tyoris-dev -p 8080:80 ghcr.io/Faridimamns/tyoris:latest
+            # Login to GitHub Container Registry (GHCR) using --password-stdin
+            echo "${{ secrets.GIT_TOKEN }}" | docker login ghcr.io -u Faridimamns --password-stdin
+
+            # Pull the latest image from GHCR
+            docker pull ghcr.io/faridimamns/tyoris:latest
+
+            # Run the Docker container named tyoris-dev
+            docker run -d --name tyoris-dev -p 8080:80 ghcr.io/faridimamns/tyoris:latest
+            
+            # docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GIT_TOKEN }}
+            # docker pull ghcr.io/Faridimamns/tyoris:latest
+            # docker run -d --name tyoris-dev -p 8080:80 ghcr.io/Faridimamns/tyoris:latest
 
   deploy-production:
     runs-on: ubuntu-latest
@@ -54,6 +63,15 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
-            docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GIT_TOKEN }}
-            docker pull ghcr.io/Faridimamns/tyoris:latest
-            docker run -d --name tyoris-prod -p 8081:80 ghcr.io/Faridimamns/tyoris:latest
+            # Login to GitHub Container Registry (GHCR) using --password-stdin
+            echo "${{ secrets.GIT_TOKEN }}" | docker login ghcr.io -u Faridimamns --password-stdin
+
+            # Pull the latest image from GHCR
+            docker pull ghcr.io/faridimamns/tyoris:latest
+
+            # Run the Docker container named tyoris-dev
+            docker run -d --name tyoris-dev -p 8080:80 ghcr.io/faridimamns/tyoris:latest
+            
+            # docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GIT_TOKEN }}
+            # docker pull ghcr.io/Faridimamns/tyoris:latest
+            # docker run -d --name tyoris-prod -p 8081:80 ghcr.io/Faridimamns/tyoris:latest
