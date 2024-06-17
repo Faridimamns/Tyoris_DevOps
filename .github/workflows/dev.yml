@@ -39,7 +39,7 @@ jobs:
           
           script: |
             # Login to GitHub Container Registry (GHCR) using --password-stdin
-            echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u Faridimamns --password-stdin
+            echo "${{ secrets.GIT_TOKEN }}" | docker login ghcr.io -u Faridimamns --password-stdin
             
             # Pull the latest image from GHCR
             docker pull ghcr.io/faridimamns/tyoris:latest
@@ -62,7 +62,7 @@ jobs:
           
           script: |
             # Login to GitHub Container Registry (GHCR) using --password-stdin
-            echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u Faridimamns --password-stdin
+            echo "${{ secrets.GIT_TOKEN }}" | docker login ghcr.io -u Faridimamns --password-stdin
             
             # Pull the latest image from GHCR
             docker pull ghcr.io/faridimamns/tyoris:latest
