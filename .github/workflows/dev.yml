@@ -35,13 +35,12 @@ jobs:
         with:
           host: ${{ secrets.MY_SERVER }}
           username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.PRIVATE_KEY }}
-          run:             
-            # Login to GitHub Container Registry (GHCR) using --password-stdin
-            echo "${{ secrets.GIT_TOKEN }}" | docker login ghcr.io -u Faridimamns --password-stdin
+          key: ${{ secrets.PRIVATE_KEY }}           
           
           script: |
-
+            # Login to GitHub Container Registry (GHCR) using --password-stdin
+            echo "${{ secrets.GIT_TOKEN }}" | docker login ghcr.io -u Faridimamns --password-stdin
+            
             # Pull the latest image from GHCR
             docker pull ghcr.io/faridimamns/tyoris:latest
 
@@ -60,11 +59,10 @@ jobs:
           host: ${{ secrets.MY_SERVER }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
-          run:
-            # Login to GitHub Container Registry (GHCR) using --password-stdin
-            echo "${{ secrets.GIT_TOKEN }}" | docker login ghcr.io -u Faridimamns --password-stdin
           
           script: |
+            # Login to GitHub Container Registry (GHCR) using --password-stdin
+            echo "${{ secrets.GIT_TOKEN }}" | docker login ghcr.io -u Faridimamns --password-stdin
             
             # Pull the latest image from GHCR
             docker pull ghcr.io/faridimamns/tyoris:latest
