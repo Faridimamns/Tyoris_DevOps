@@ -1,48 +1,59 @@
-name: Deploy on Development Push
+name: CI/CD 
 
 on:
   push:
     branches:
-      - development
+      - main
+  workflow_dispatch: # Allow manual triggering of the workflow
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-        
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
-      
-      - name: Build and Push Docker Image
-        id: docker_build
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          push: true
-          tags: faridimamns/tyoris-cicd:latest
+      - name: Login to GitHub Container Registry
+        run: echo "${{ secrets.GIT_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Deploy via SSH
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t ghcr.io/Faridimamns/tyoris:latest .
+          docker push ghcr.io/Faridimamns/tyoris:latest
+
+  deploy-development:
+    runs-on: ubuntu-latest
+    needs: build-and-deploy
+
+    steps:
+      - name: SSH to Development Server
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ secrets.SSH_HOST }}
+          host: ${{ secrets.MY_SERVER }}
           username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          key: ${{ secrets.PRIVATE_KEY }}
           script: |
-            # Pull the latest Docker image from Docker Hub
-            docker pull faridimamns/tyoris-cicd:latest
-            
-            # Stop and remove the existing container (if any)
-            docker stop tyoris || true
-            docker rm tyoris || true
-            
-            # Run the Docker container
-            docker run -d --name tyoris -p 80:80 faridimamns/tyoris-cicd:latest
+            docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+            docker pull ghcr.io/Faridimamns/tyoris:latest
+            docker run -d --name tyoris-dev -p 8080:80 ghcr.io/Faridimamns/tyoris:latest
+
+  deploy-production:
+    runs-on: ubuntu-latest
+    needs: build-and-deploy
+    if: github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: SSH to Production Server
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.MY_SERVER }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+            docker pull ghcr.io/Faridimamns/tyoris:latest
+            docker run -d --name tyoris-prod -p 8081:80 ghcr.io/Faridimamns/tyoris:latest
