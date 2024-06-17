@@ -29,4 +29,20 @@ jobs:
           context: .
           push: true
           tags: faridimamns/tyoris-cicd:latest
-          
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # Pull the latest Docker image from Docker Hub
+            docker pull faridimamns/tyoris-cicd:latest
+            
+            # Stop and remove the existing container (if any)
+            docker stop tyoris || true
+            docker rm tyoris || true
+            
+            # Run the Docker container
+            docker run -d --name tyoris -p 80:80 faridimamns/tyoris-cicd:latest
