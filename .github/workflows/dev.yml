@@ -44,6 +44,10 @@ jobs:
             # Pull the latest image from GHCR
             docker pull ghcr.io/faridimamns/tyoris:latest
 
+            # Stop and remove container tyoris-dev if it exists
+            docker stop tyoris-dev || true  # Use '|| true' to ignore error if container is not running
+            docker rm -f tyoris-dev || true  # Use '|| true' to ignore error if container doesn't exist
+            
             # Run the Docker container named tyoris-dev
             docker run -d --name tyoris-dev -p 8080:80 ghcr.io/faridimamns/tyoris:latest
 
@@ -67,5 +71,9 @@ jobs:
             # Pull the latest image from GHCR
             docker pull ghcr.io/faridimamns/tyoris:latest
 
+            # Stop and remove container tyoris-dev if it exists
+            docker stop tyoris-pro || true  # Use '|| true' to ignore error if container is not running
+            docker rm -f tyoris-pro || true  # Use '|| true' to ignore error if container doesn't exist
+
             # Run the Docker container named tyoris-dev
-            docker run -d --name tyoris-dev -p 8080:80 ghcr.io/faridimamns/tyoris:latest
+            docker run -d --name tyoris-pro -p 8081:80 ghcr.io/faridimamns/tyoris:latest
