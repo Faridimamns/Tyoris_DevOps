@@ -37,7 +37,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
-            docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+            docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GIT_TOKEN }}
             docker pull ghcr.io/Faridimamns/tyoris:latest
             docker run -d --name tyoris-dev -p 8080:80 ghcr.io/Faridimamns/tyoris:latest
 
@@ -54,6 +54,6 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
-            docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+            docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GIT_TOKEN }}
             docker pull ghcr.io/Faridimamns/tyoris:latest
             docker run -d --name tyoris-prod -p 8081:80 ghcr.io/Faridimamns/tyoris:latest
